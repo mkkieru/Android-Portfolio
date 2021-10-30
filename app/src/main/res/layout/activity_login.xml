@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Login"
-    android:background="@drawable/portfolio">
+    android:background="@drawable/portfolio3">
 
 <LinearLayout
     android:orientation="vertical"
@@ -17,30 +17,47 @@
     android:layout_centerHorizontal="true"
     android:id="@+id/linearLayout">
 
-    <EditText
-        android:id="@+id/emailEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:nextFocusDown="@+id/passwordEditText"
-        android:padding="10dp"
-        android:layout_marginBottom="10dp"
-        android:textColor="@android:color/black"
-        android:textSize="20sp" />
 
-    <EditText
-        android:id="@+id/passwordEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/emailLoginTextInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:layout_marginBottom="10dp"
+        android:hint="Email"
+        android:textColorHint="@color/black"
+        app:endIconMode="clear_text"
+        app:helperText="Required"
+        app:helperTextTextColor="#FF0000"
+        app:startIconDrawable="@drawable/ic_baseline_email_24">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/PasswordLoginTextInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:hint="Password"
-        android:inputType="textPassword"
-        android:nextFocusDown="@+id/passwordEditText"
-        android:padding="10dp"
-        android:textColor="@android:color/black"
-        android:textSize="20sp" />
+        android:textColorHint="@color/black"
+        android:textSize="20sp"
+        app:endIconMode="password_toggle"
+        app:helperText="Required"
+        app:helperTextTextColor="#FF0000"
+        app:startIconDrawable="@drawable/ic_baseline_lock_24">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.google.android.material.button.MaterialButton
@@ -59,6 +76,7 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="18sp"
+        android:paddingTop="30dp"
         android:text="Don't have an account? Sign up here!"
         android:id="@+id/registerTextView"
         android:layout_gravity="center_horizontal" />

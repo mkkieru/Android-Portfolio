@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,8 +25,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
     @BindView(R.id.registerTextView) TextView mRegisterTextView;
     @BindView(R.id.passwordLoginButton) Button mPasswordLoginButton;
-    @BindView(R.id.emailEditText)EditText mEmailEditText;
-    @BindView(R.id.passwordEditText)EditText mPasswordEditText;
+
+    TextInputLayout mEmailEditText, mPasswordEditText;
+
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
 
@@ -37,6 +39,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
         mAuth = FirebaseAuth.getInstance();
         createAuthStateListener();
+
+
+        mEmailEditText = findViewById(R.id.emailLoginTextInputLayout);
+        mPasswordEditText = findViewById(R.id.PasswordLoginTextInputLayout);
 
         mRegisterTextView.setOnClickListener(this);
         mPasswordLoginButton.setOnClickListener(this);
@@ -72,8 +78,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     }
 
     private void LogInWithPassword() {
-        String email = mEmailEditText.getText().toString().trim();
-        String password = mPasswordEditText.getText().toString().trim();
+        String email = mEmailEditText.getEditText().getText().toString().trim();
+        String password = mPasswordEditText.getEditText().getText().toString().trim();
         if (email.equals("")) {
             mEmailEditText.setError("Please enter your email");
             return;

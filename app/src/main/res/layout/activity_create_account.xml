@@ -6,20 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CreateAccount"
-    android:background="@drawable/portfolio">
+    android:background="@drawable/portfolio3">
 
     <LinearLayout
         android:id="@+id/LinearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
         android:orientation="vertical"
-        android:padding="30dp">
+        android:padding="20dp">
 
         <ImageView
             android:id="@+id/profileImage"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="20dp"
             android:scaleType="centerCrop"
@@ -32,10 +33,11 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:hint="Name"
-            android:textColorHint="@color/white"
+            android:textColorHint="@color/black"
             app:endIconMode="clear_text"
             app:helperText="Required"
-            app:helperTextTextColor="#FF0000">
+            app:helperTextTextColor="#FF0000"
+            app:startIconDrawable="@drawable/ic_baseline_person_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/nameEditText"
@@ -50,10 +52,11 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:hint="Email"
-            android:textColorHint="@color/white"
+            android:textColorHint="@color/black"
             app:endIconMode="clear_text"
             app:helperText="Required"
-            app:helperTextTextColor="#FF0000">
+            app:helperTextTextColor="#FF0000"
+            app:startIconDrawable="@drawable/ic_baseline_email_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/emailEditText"
@@ -69,11 +72,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:hint="Password"
-            android:textColorHint="@color/white"
+            android:textColorHint="@color/black"
             android:textSize="20sp"
             app:endIconMode="password_toggle"
             app:helperText="Required"
-            app:helperTextTextColor="#FF0000">
+            app:helperTextTextColor="#FF0000"
+            app:startIconDrawable="@drawable/ic_baseline_lock_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/passwordEditText"
@@ -89,10 +93,11 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:hint="Confirm Password"
-            android:textColorHint="@color/white"
+            android:textColorHint="@color/black"
             app:endIconMode="password_toggle"
             app:helperText="Required"
-            app:helperTextTextColor="#FF0000">
+            app:helperTextTextColor="#FF0000"
+            app:startIconDrawable="@drawable/ic_baseline_lock_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/confirmPasswordEditText"
@@ -105,7 +110,6 @@
             android:id="@+id/createUserButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:text="Sign up"
             android:textColor="@color/black" />
 
@@ -115,7 +119,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
             android:text="Already have an account? Log in here!"
             android:textColor="@color/black"
             android:textSize="18sp"

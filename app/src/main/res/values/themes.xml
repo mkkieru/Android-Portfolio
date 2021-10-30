@@ -14,5 +14,10 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="NoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="Theme.MyPortfolio" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+    </style>
 </resources>
