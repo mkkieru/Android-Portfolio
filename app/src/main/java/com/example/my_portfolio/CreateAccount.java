@@ -31,12 +31,15 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -45,11 +48,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CreateAccount extends AppCompatActivity implements View.OnClickListener {
-    @BindView(R.id.profileImage) ImageView mProfileImage;
-    @BindView(R.id.createUserButton) Button mCreateUserButton;
-    @BindView(R.id.loginTextView) TextView mLoginTextView;
+    @BindView(R.id.profileImage)
+    ImageView mProfileImage;
+    @BindView(R.id.createUserButton)
+    Button mCreateUserButton;
+    @BindView(R.id.loginTextView)
+    TextView mLoginTextView;
+    public static final String TAG = CreateAccount.class.getSimpleName();
 
-    TextInputLayout mNameEditText,mEmailEditText, mPasswordEditText,mConfirmPasswordEditText;
+    TextInputLayout mNameEditText, mEmailEditText, mPasswordEditText, mConfirmPasswordEditText;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -57,7 +64,13 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
     private StorageReference storageReference;
     private Uri imageUri;
 
+    private FirebaseFirestore db;
+    private CollectionReference ref;
+    private DatabaseReference root = FirebaseDatabase.getInstance().getReference("Image");
+    private StorageReference reference = FirebaseStorage.getInstance().getReference();
+
     private String mName;
+    private String imagePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +96,7 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
 
     }
 
-    public void createNewUser(){
+    public void createNewUser() {
         mName = mNameEditText.getEditText().getText().toString().trim();
         final String name = mNameEditText.getEditText().getText().toString().trim();
         final String email = mEmailEditText.getEditText().getText().toString().trim();
@@ -96,25 +109,41 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
         boolean validPassword = isValidPassword(password, confirmPassword);
         if (!validEmail || !validName || !validPassword) return;
 
-        mAuth.createUserWithEmailAndPassword(email,password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        createFirebaseUserProfile(Objects.requireNonNull(task.getResult().getUser()));
-                        Toast.makeText(this, "Account created", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(this, "Account creation Failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        if (imageUri == null) {
+            Toast.makeText(this, "Select Image", Toast.LENGTH_SHORT).show();
+        } else {
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
 
+                            createFirebaseUserProfile(Objects.requireNonNull(task.getResult().getUser()));
+
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                            Map<String, Object> NewUser = new HashMap<>();
+                            NewUser.put("Name", name);
+                            NewUser.put("Email", email);
+                            NewUser.put("Image", imagePath);
+
+                            db.collection("users")
+                                    .document(user.getUid())
+                                    .set(NewUser);
+                            Toast.makeText(this, "Account created", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Account creation Failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
     }
-    public void createAuthStateListener(){
+
+    public void createAuthStateListener() {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 final FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null){
-                    Intent intent = new Intent (CreateAccount.this, MainActivity.class);
+                if (user != null) {
+                    Intent intent = new Intent(CreateAccount.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
@@ -125,20 +154,20 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        if (v == mCreateUserButton){
+        if (v == mCreateUserButton) {
             createNewUser();
         }
-        if (v == mLoginTextView){
+        if (v == mLoginTextView) {
             Intent intent = new Intent(CreateAccount.this, Login.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         }
-        if ( v == mProfileImage){
+        if (v == mProfileImage) {
             Intent galleryIntent = new Intent();
             galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
             galleryIntent.setType("image/*");
-            startActivityForResult(galleryIntent,1);
+            startActivityForResult(galleryIntent, 1);
         }
 
     }
@@ -146,50 +175,59 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData()!=null){
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             mProfileImage.setImageURI(imageUri);
-            uploadPicture();
+            uploadPicture(imageUri);
         }
     }
 
-    private void uploadPicture() {
+    private void uploadPicture(Uri uri) {
 
-        final ProgressDialog pd = new ProgressDialog(this);
-        pd.setTitle("Uploading image... ");
-        pd.show();
+        if (imageUri == null) {
+            Toast.makeText(this, "Please select image", Toast.LENGTH_SHORT).show();
+        } else {
+            final ProgressDialog pd = new ProgressDialog(this);
+            pd.setTitle("Uploading image... ");
+            pd.show();
 
-        final String randomKey = UUID.randomUUID().toString();
-        StorageReference riversRef = storageReference.child("images/"+randomKey);
+            StorageReference fileRef = reference.child((System.currentTimeMillis() + "." + getFileExtension(uri)));
+            fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
 
-        riversRef.putFile(imageUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        pd.dismiss();
-                        Toast.makeText(CreateAccount.this, "Image uploaded", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        pd.dismiss();
-                        Toast.makeText(CreateAccount.this, "Failed to upload image", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                        double progressPercentage = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                        pd.setMessage("Percentage: " + (int)  progressPercentage + "%");
-                    }
-                });
+                            imagePath = uri.toString();
+                            model model = new model(uri.toString());
+                            String modelId = root.push().getKey();
+                            root.child(modelId).setValue(model);
+
+                            Toast.makeText(CreateAccount.this, "Uploaded successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                    double progressPercentage = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                    pd.setMessage("Percentage: " + (int)  progressPercentage + "%");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                }
+            });
+
+
+        }
 
     }
 
-    private String getFileExtension(Uri mUri){
+    private String getFileExtension(Uri mUri) {
         ContentResolver cr = getContentResolver();
-        MimeTypeMap mime =MimeTypeMap.getSingleton();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cr.getType(mUri));
     }
 
@@ -206,6 +244,7 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+
     private boolean isValidEmail(String email) {
         boolean isGoodEmail =
                 (email != null && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches());
@@ -234,6 +273,7 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
         }
         return true;
     }
+
     private void createFirebaseUserProfile(final FirebaseUser user) {
 
         UserProfileChangeRequest addProfileName = new UserProfileChangeRequest.Builder()

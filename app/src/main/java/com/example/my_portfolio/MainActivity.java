@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         mAuth = FirebaseAuth.getInstance();
+        Intent intent = new Intent();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -90,7 +91,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(this, "SHARE", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_send:
-                Toast.makeText(this, "SEND", Toast.LENGTH_SHORT).show();
+
+                /*String to=editTextTo.getText().toString();
+                String subject=editTextSubject.getText().toString();
+                String message=editTextMessage.getText().toString();
+*/
+
+                Intent email = new Intent(Intent.ACTION_SEND);
+                /*email.putExtra(Intent.EXTRA_EMAIL, new String[]{ to});
+                email.putExtra(Intent.EXTRA_SUBJECT, subject);
+                email.putExtra(Intent.EXTRA_TEXT, message);*/
+
+                //need this to prompts email client only
+                email.setType("message/rfc822");
+
+                startActivity(Intent.createChooser(email, "Choose an Email client :"));
+
+                //Toast.makeText(this, "SEND", Toast.LENGTH_SHORT).show();
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
