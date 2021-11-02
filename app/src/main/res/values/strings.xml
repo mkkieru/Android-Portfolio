@@ -2,5 +2,7 @@
     <string name="app_name">My_Portfolio</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="create_account">Already have an account? <i><u> Log in here!</u></i></string>
+    <string name="login">Don\'t have an account? <u><i> Sign up here!</i></u></string>
 
 </resources>

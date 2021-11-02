@@ -77,7 +77,7 @@
         android:textStyle="bold"
         android:textSize="18sp"
         android:paddingTop="30dp"
-        android:text="Don't have an account? Sign up here!"
+        android:text="@string/login"
         android:id="@+id/registerTextView"
         android:layout_gravity="center_horizontal" />
 

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.renderscript.ScriptGroup;
@@ -77,6 +78,8 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
         ButterKnife.bind(this);
+
+        //mLoginTextView.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
 
         mNameEditText = findViewById(R.id.nameTextInputLayout);
         mEmailEditText = findViewById(R.id.emailTextInputLayout);
@@ -195,6 +198,7 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
             fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    pd.dismiss();
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
