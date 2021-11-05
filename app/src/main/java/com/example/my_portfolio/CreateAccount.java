@@ -127,7 +127,7 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
                             Map<String, Object> NewUser = new HashMap<>();
                             NewUser.put("Name", name);
                             NewUser.put("Email", email);
-                            NewUser.put("Image", imagePath);
+                            NewUser.put("Image Path", imagePath);
 
                             db.collection("users")
                                     .document(user.getUid())

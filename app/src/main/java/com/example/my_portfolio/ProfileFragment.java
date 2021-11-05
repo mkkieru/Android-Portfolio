@@ -34,6 +34,7 @@ public class ProfileFragment extends Fragment {
     @BindView(R.id.userNumber) TextView mUserNumber;
     @BindView(R.id.userLocation) TextView mUserLocation;
     @BindView(R.id.editProfile) ImageView mEditProfile;
+    @BindView(R.id.userStatus) TextView mUserStatus;
 
 
     @Nullable
@@ -83,12 +84,19 @@ public class ProfileFragment extends Fragment {
         df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                String imagePath = documentSnapshot.getString("Image");
+                String imagePath = documentSnapshot.getString("Image Path");
                 String email = documentSnapshot.getString("Email");
                 String name = documentSnapshot.getString("Name");
+                String location = documentSnapshot.getString("Location");
+                String status = documentSnapshot.getString("Status");
+                String phoneNumber = documentSnapshot.getString("PhoneNumber");
 
                 mUserName.setText(name);
                 mUserMail.setText(email);
+                mUserLocation.setText(location);
+                mUserStatus.setText(status);
+                mUserNumber.setText(phoneNumber);
+
 
                 Picasso.get().load(imagePath).into(mProfileImage);
             }
