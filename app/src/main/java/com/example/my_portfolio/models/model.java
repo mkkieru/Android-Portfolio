@@ -1,4 +1,4 @@
-package com.example.my_portfolio;
+package com.example.my_portfolio.models;
 
 public class model {
     private String imageUrl;

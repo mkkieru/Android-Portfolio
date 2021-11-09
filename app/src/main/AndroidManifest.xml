@@ -4,7 +4,8 @@
     package="com.example.my_portfolio">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -17,14 +18,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.My_Portfolio">
         <activity
-            android:name=".Personal_Details"
-            android:exported="false" >
+            android:name=".ui.UserDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.Personal_Details"
+            android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.my_portfolio.MainActivity" />
+                android:value="com.example.my_portfolio.ui.MainActivity" />
         </activity>
         <activity
-            android:name=".Login"
+            android:name=".ui.Login"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,10 +37,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateAccount"
-            android:exported="true"></activity>
+            android:name=".ui.CreateAccount"
+            android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:theme="@style/Theme.MyPortfolio" />
 
         <provider

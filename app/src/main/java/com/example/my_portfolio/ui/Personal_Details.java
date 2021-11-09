@@ -1,10 +1,7 @@
-package com.example.my_portfolio;
+package com.example.my_portfolio.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ButtonBarLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.my_portfolio.R;
+import com.example.my_portfolio.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -22,10 +21,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -113,6 +112,13 @@ public class Personal_Details extends AppCompatActivity {
                 db.collection("users")
                         .document(user.getUid())
                         .set(NewUser);
+
+                User user1 = new User(name,imagePath,"Not Selected",PhoneNumber);
+
+                DatabaseReference restaurantRef = FirebaseDatabase
+                        .getInstance()
+                        .getReference("USER");
+                restaurantRef.push().setValue(user1);
 
                 getSupportFragmentManager().beginTransaction()
                         .add(android.R.id.content, new ProfileFragment()).commit();
