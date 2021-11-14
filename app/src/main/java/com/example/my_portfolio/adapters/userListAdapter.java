@@ -1,6 +1,7 @@
 package com.example.my_portfolio.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.my_portfolio.R;
 import com.example.my_portfolio.models.User;
-import com.squareup.picasso.Picasso;
+import com.example.my_portfolio.ui.MessageActivity;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userVi
     @Override
     public userListAdapter.userViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_list_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_list_item,parent,false);
         userViewHolder viewHolder = new userViewHolder(view);
         return viewHolder;
     }
@@ -41,6 +42,17 @@ public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userVi
     @Override
     public void onBindViewHolder(@NonNull userListAdapter.userViewHolder holder, int position) {
         holder.bindUser(users.get(position));
+        final User user = users.get(position);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+Intent intent = new Intent(context, MessageActivity.class);
+                intent.putExtra("userid", user.getId());
+                context.startActivity(intent);
+
+
+            }
+        });
     }
 
     @Override
@@ -52,7 +64,6 @@ public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userVi
 
         @BindView(R.id.userImageView) ImageView mUserImageView;
         @BindView(R.id.userNameTextView) TextView mUserNameTextView;
-        @BindView(R.id.professionTextView) TextView mProfessionTextView;
 
 
         public Context mContext;

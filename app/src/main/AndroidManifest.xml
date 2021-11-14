@@ -18,8 +18,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.My_Portfolio">
         <activity
+            android:name=".ui.MessageActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyPortfolio">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.my_portfolio.ui.MainActivity" />
+        </activity>
+        <activity
             android:name=".ui.UserDetailActivity"
-            android:exported="false" />
+            android:exported="false" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.my_portfolio.ui.MainActivity" />
+        </activity>
         <activity
             android:name=".ui.Personal_Details"
             android:exported="false">

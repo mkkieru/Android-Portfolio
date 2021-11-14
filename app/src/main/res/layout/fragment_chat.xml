@@ -1,14 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/whiteSmoke">
+    tools:context=".ui.MessageActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chat Fragment"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"/>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/messageToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/design_default_color_primary_dark"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/TextAppearance.AppCompat.Menu">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/chaPprofileImage"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/chatUserName"
+                android:textSize="18sp"
+                android:layout_marginLeft="25dp"
+                android:textColor="#fff"
+                android:textStyle="bold"
+                android:layout_marginStart="25dp"/>
+
+        </androidx.appcompat.widget.Toolbar>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
 
 </RelativeLayout>

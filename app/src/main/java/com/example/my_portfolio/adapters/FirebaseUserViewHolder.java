@@ -10,7 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.my_portfolio.R;
+import com.example.my_portfolio.models.Posts;
 import com.example.my_portfolio.models.User;
+import com.example.my_portfolio.ui.MessageActivity;
 import com.example.my_portfolio.ui.UserDetailActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,45 +36,75 @@ public class FirebaseUserViewHolder extends RecyclerView.ViewHolder implements V
         mContext = itemView.getContext();
         itemView.setOnClickListener(this);
     }
-    public void bindUser(User user) {
+    public void bindUser(Posts user) {
+
         ImageView userImageView = (ImageView) mView.findViewById(R.id.userImageView);
         TextView userNameTextView = (TextView) mView.findViewById(R.id.userNameTextView);
-        TextView professionTextView = (TextView) mView.findViewById(R.id.professionTextView);
 
-        TextView like = (TextView) mView.findViewById(R.id.likeIcon);
-        TextView comment = (TextView) mView.findViewById(R.id.commentIcon);
-
-        like.setOnClickListener(this);
-        comment.setOnClickListener(this);
+        ImageView postImage = (ImageView) mView.findViewById(R.id.postImage);
+        TextView caption = (TextView) mView.findViewById(R.id.postCaption);
 
 
-        Picasso.get().load(user.getImageUrl()).into(userImageView);
+        Picasso.get().load(user.getProfileImageUrl()).into(userImageView);
+        Picasso.get().load(user.getPostImageUrl()).into(postImage);
 
+        caption.setText(user.getCaption());
         userNameTextView.setText(user.getName());
-        professionTextView.setText(user.getProfession());
+    }
+
+    public void bindChatUser(User user) {
+
+        ImageView chatImageView = (ImageView) mView.findViewById(R.id.chatImageView);
+        TextView chatUserName = (TextView) mView.findViewById(R.id.chatUserName);
+        ImageView img_on = (ImageView) mView.findViewById(R.id.log_on);
+        ImageView img_off = (ImageView) mView.findViewById(R.id.log_off);
+
+        if (user.getStatus().equals("online")){
+            img_on.setVisibility(View.VISIBLE);;
+            img_off.setVisibility(View.GONE);;
+        }
+        if (user.getStatus().equals("offline")){
+            img_on.setVisibility(View.GONE);;
+            img_off.setVisibility(View.VISIBLE);;
+        }
+
+        Picasso.get().load(user.getImageUrl()).into(chatImageView);
+        chatUserName.setText(user.getName());
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MessageActivity.class);
+                intent.putExtra("userid", user.getId());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
-        final ArrayList<User> users = new ArrayList<>();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("USER");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot shot : snapshot.getChildren()){
-                    users.add(snapshot.getValue(User.class));
+        if (v == itemView){
+            final ArrayList<User> users = new ArrayList<>();
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("USER");
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot shot : snapshot.getChildren()){
+                        users.add(shot.getValue(User.class));
+                    }
+                    int itemPosition = getLayoutPosition();
+                    Intent intent = new Intent(mContext, UserDetailActivity.class);
+                    intent.putExtra("position", itemPosition);
+                    intent.putExtra("users", Parcels.wrap(users));
+                    mContext.startActivity(intent);
+
                 }
-                int itemPosition = getLayoutPosition();
-                Intent intent = new Intent(mContext, UserDetailActivity.class);
-                intent.putExtra("position", itemPosition+"");
-                intent.putExtra("users", Parcels.wrap(users));
-                mContext.startActivity(intent);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
     }
 }

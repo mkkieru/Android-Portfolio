@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.my_portfolio.models.User;
-import com.example.my_portfolio.ui.UserDetailFragment;
+import com.example.my_portfolio.fragments.UserDetailFragment;
 
 import java.util.List;
 

@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.my_portfolio.R;
+import com.example.my_portfolio.fragments.ProfileFragment;
 import com.example.my_portfolio.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -57,27 +58,15 @@ public class Personal_Details extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        getSupportActionBar().setTitle("Edit Profile");
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        getSupportActionBar().setTitle("Edit Profile");
 
         db.collection("users").document(user.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 imagePath = documentSnapshot.getString("Image Path");
-            }
-        });
-
-
-        mUploadDocumentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                getSupportFragmentManager().beginTransaction()
-                        .add(android.R.id.content, new ProfileFragment()).commit();
-
             }
         });
 
@@ -113,13 +102,13 @@ public class Personal_Details extends AppCompatActivity {
                         .document(user.getUid())
                         .set(NewUser);
 
-                User user1 = new User(name,imagePath,"Not Selected",PhoneNumber);
+                User user1 = new User(user.getUid(), name,imagePath,"Not Selected",PhoneNumber,"online");
 
-                DatabaseReference restaurantRef = FirebaseDatabase
+                DatabaseReference ref = FirebaseDatabase
                         .getInstance()
-                        .getReference("USER");
-                restaurantRef.push().setValue(user1);
+                        .getReference("USER").child(user.getUid());
 
+                ref.setValue(user1);
                 getSupportFragmentManager().beginTransaction()
                         .add(android.R.id.content, new ProfileFragment()).commit();
 
@@ -160,8 +149,7 @@ public class Personal_Details extends AppCompatActivity {
     private void logout() {
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(this, Login.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        finish();
     }
 }

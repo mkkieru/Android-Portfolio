@@ -15,9 +15,17 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.my_portfolio.R;
+import com.example.my_portfolio.fragments.ChatFragment;
+import com.example.my_portfolio.fragments.HomeFragment;
+import com.example.my_portfolio.fragments.PostFragment;
+import com.example.my_portfolio.fragments.ProfileFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,13 +40,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    FirebaseUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
         String userId = user.getUid();
 
         setSupportActionBar(toolbar);
@@ -93,20 +103,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ProfileFragment()).commit();
                 break;
+            case R.id.nav_post:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new PostFragment()).commit();
+                break;
             case R.id.nav_share:
                 Toast.makeText(MainActivity.this, "SHARE", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_send:
                 Intent email = new Intent(Intent.ACTION_SEND);
-                /*email.putExtra(Intent.EXTRA_EMAIL, new String[]{ to});
-                email.putExtra(Intent.EXTRA_SUBJECT, subject);
-                email.putExtra(Intent.EXTRA_TEXT, message);*/
-
-                //need this to prompts email client only
                 email.setType("message/rfc822");
-
                 startActivity(Intent.createChooser(email, "Choose an Email client :"));
-
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -142,9 +149,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void logout() {
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(MainActivity.this, Login.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        finish();
     }
 
     @Override
@@ -160,4 +166,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+
+    private void status (String status){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("USER").child(user.getUid());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+
+        reference.updateChildren(hashMap);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status("offline");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("online");
+    }
+
 }
